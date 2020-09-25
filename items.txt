@@ -1,0 +1,12 @@
+[
+    ("Taco n' Beef", 150) ,
+    ("Cheesy Nachos", 100) ,
+    ("Pollo con Arroz", 200) ,
+    ("Cowboy's Chorizo", 125) ,
+    ("Gambas n' Cheese", 250) ,
+    ("Signature Callos", 300) ,
+    ("Garlic Parmesan Wings", 175) ,
+    ("Grilled Cheese Sandwich", 100) ,
+    ("Poncho Ribs", 250) ,
+    ("Hot Chocolate", 75) 
+]
