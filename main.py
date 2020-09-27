@@ -1,5 +1,9 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
+from tkinter import font
+#import tkinter.ttk as ttk
+# import ttk
 import json
 import os
 import ast
@@ -8,46 +12,7 @@ class RestaurantApplication(Tk):
 
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
-        self.resizable(width=False, height=False)
-        self.geometry('900x375')
-        self.title('Restaurant Point of Sale System')
-
-        # Create List variables
-        self.list_var1 = StringVar()
-        self.list_var2 = StringVar()
-
-        # Set Initial Values
-        self.initial_values()
-
-        # Create Frame Widgets
-        self.main_frame = Frame(self)#, relief=RIDGE, bd=10)
-        self.button_frame = Frame(self.main_frame)
-
-        # Label Widgets
-        self.label_header = Label(self.main_frame, text=self.restaurant_name, font=("Helvetica",30))
-        self.label_header.place(relx=0.5, rely=0.08, anchor=CENTER)
-        self.label_description = Label(self.main_frame, font=("Helvetica",14), anchor=W, justify=LEFT,\
-            text=self.description)
-        self.label_description.place(relx=0.5, rely=0.28, anchor=CENTER)
-
-        self.listbox1 = Listbox(self.main_frame, listvariable=self.list_var1, selectmode='single')
-        self.listbox2 = Listbox(self.main_frame, listvariable=self.list_var2, selectmode='single')
-
-        self.add_button = Button(self.button_frame, text='Add - >', width=10)
-        self.remove_button = Button(self.button_frame, text='< - Remove', width=10)
-        self.proceed_button = Button(self.button_frame, text='Proceed', width=10)#, command=self.move_to_left)
-
-        # packing
-        self.add_button.place(anchor=CENTER,relx=0.5,rely=0.1)
-        self.remove_button.place(anchor=CENTER,relx=0.5,rely=0.45)
-        self.proceed_button.place(anchor=CENTER,relx=0.5,rely=0.8)
-
-        self.listbox1.place(height=225, width=325, rely=0.4)
-        self.listbox2.place(height=225, width=450, rely=0.4, relx=0.5)
-
-        self.button_frame.place(height=225, width=126, rely=0.4, relx=0.36)
-        self.main_frame.place(height=375, width=900)
-
+        self.setup_window()
         self.withdraw()
         self.security_login()
 
@@ -86,21 +51,80 @@ class RestaurantApplication(Tk):
         if response == 'ok':
             self.quit()
 
+    def setup_window(self):
+        self.resizable(width=False, height=False)
+        self.geometry('900x375')
+        self.title('Restaurant Point of Sale System')
+
+        # Set Initial Values
+        self.initial_values()
+
+        # Create Frame Widgets
+        self.main_frame = Frame(self)
+        self.button_frame = Frame(self.main_frame)
+
+        # Create Label Widgets
+        self.label_header = Label(self.main_frame, text=self.restaurant_name, font=("Helvetica",30))
+        self.label_header.place(relx=0.5, rely=0.08, anchor=CENTER)
+        self.label_description = Label(self.main_frame, font=("Helvetica",14), anchor=W, justify=LEFT,\
+            text=self.description)
+        self.label_description.place(relx=0.5, rely=0.28, anchor=CENTER)
+
+        # Create Listbox Widgets
+        self.listbox1 = ttk.Treeview(columns=self.listbox_header1, show="headings")
+        vsb1 = ttk.Scrollbar(orient="vertical", command=self.listbox1.yview)
+        self.listbox1.configure(yscrollcommand=vsb1.set)
+        self.listbox2 = ttk.Treeview(columns=self.listbox_header2, show="headings")
+        vsb2 = ttk.Scrollbar(orient="vertical", command=self.listbox2.yview)
+        self.listbox2.configure(yscrollcommand=vsb2.set)
+
+        # Create Button Widgets
+        self.add_button = Button(self.button_frame, text='Add - >', width=10)
+        self.remove_button = Button(self.button_frame, text='< - Remove', width=10)
+        self.proceed_button = Button(self.button_frame, text='Proceed', width=10)#, command=self.move_to_left)
+
+        # Display the Widgets
+        self.add_button.place(anchor=CENTER,relx=0.5,rely=0.1)
+        self.remove_button.place(anchor=CENTER,relx=0.5,rely=0.45)
+        self.proceed_button.place(anchor=CENTER,relx=0.5,rely=0.8)
+        self.listbox1.place(height=225, width=325, rely=0.4)
+        self.listbox2.place(height=225, width=450, rely=0.4, relx=0.5)
+        self.button_frame.place(height=225, width=126, rely=0.4, relx=0.36)
+        self.main_frame.place(height=375, width=900)
+
+        self.load_initial_listboxes()
+
+    def load_initial_listboxes(self):
+        # Read from text file
+        item_file = open('items.txt', 'r')
+        item_contents = item_file.read()
+        self.item_dict = ast.literal_eval(item_contents)
+        item_file.close()
+
+        self.listbox1.heading(self.listbox_header1[0], text=self.listbox_header1[0])
+        self.listbox1.column(self.listbox_header1[0], minwidth=175, width=200)
+        self.listbox1.heading(self.listbox_header1[1], text=self.listbox_header1[1])
+        self.listbox1.column(self.listbox_header1[1], minwidth=100, width=100)
+
+        self.listbox2.heading(self.listbox_header2[0], text=self.listbox_header2[0])
+        self.listbox2.column(self.listbox_header2[0], minwidth=50, width=50)
+        self.listbox2.heading(self.listbox_header2[1], text=self.listbox_header2[1])
+        self.listbox2.column(self.listbox_header2[1], minwidth=175, width=250)
+        self.listbox2.heading(self.listbox_header2[2], text=self.listbox_header2[2])
+        self.listbox2.column(self.listbox_header2[2], minwidth=100, width=100)
+
+        for item in self.item_dict:
+            self.listbox1.insert('', 'end', values=(item, ("PHP " + str(self.item_dict[item]) + ".00")))
+
     def initial_values(self):
         self.restaurant_name = 'Wings and Ponchos: Mexican-Western Fusion'
         self.description = 'Welcome to ' + self.restaurant_name + '!\n\n' + \
-            'Select an item from the right panel and press the Add button to add the item in'\
+            'Select an item from the right panel and press the Add button to add the item in '\
                 + 'your order. Your orders will appear on the left panel.\nTo cancel an order, '\
                     + 'select the order from the left panel and click the Remove button. Press the'\
-                        + 'Proceed button to confirm your order.'
-        self.get_items()
-
-    def get_items(self):
-        item_file = open('items.txt', 'r')
-        item_contents = item_file.read()
-        self.item_list = ast.literal_eval(item_contents)
-        item_file.close()
-
-
+                        + ' Proceed button to confirm your order.'
+        self.listbox_header1 = ['Item', 'Price']
+        self.listbox_header2 = ['','Item', 'Subtotal']
+   
 app = RestaurantApplication()
 app.mainloop()
