@@ -61,8 +61,8 @@ class RestaurantApplication(Tk):
         self.label_password = Label(self.security_window, text="Enter Password:")
         self.entry_username = Entry(self.security_window, width=30)
         self.entry_password = Entry(self.security_window, width=30, show="*")
-        self.button_ok = Button(self.security_window, text="OK", width=10)#, command = select_time)
-        self.button_cancel = Button(self.security_window, text="Cancel", width=10)#, command = select_time)
+        self.button_ok = Button(self.security_window, text="OK", width=10, command = lambda: self.login_ok())
+        self.button_cancel = Button(self.security_window, text="Cancel", width=10, command = lambda: self.login_error())
 
         self.label_username.pack(anchor=W)
         self.entry_username.pack()
@@ -72,7 +72,19 @@ class RestaurantApplication(Tk):
         self.button_ok.place(anchor=CENTER, relx=0.3, rely=0.9)
         self.button_cancel.place(anchor=CENTER, relx=0.7, rely=0.9)
 
-        #self.deiconify()
+    def login_ok(self):
+        if ((self.entry_username.get() == 'admin') and (self.entry_password.get() == 'lbymf1d')) or \
+            ((self.entry_username.get() == 'customer1') and (self.entry_password.get() == 'password1')) or \
+                ((self.entry_username.get() == 'customer2') and (self.entry_password.get() == 'password2')):
+            self.deiconify()
+            self.security_window.destroy()
+        else:
+            self.login_error()
+
+    def login_error(self):
+        response = messagebox.showerror("Error", "Invalid or incorrect password! The program will exit.")
+        if response == 'ok':
+            self.quit()
 
     def initial_values(self):
         self.restaurant_name = 'Wings and Ponchos: Mexican-Western Fusion'
