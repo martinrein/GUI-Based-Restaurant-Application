@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import simpledialog
 from tkinter import ttk
-from tkinter import font
 import json
 import os
 import ast
@@ -89,7 +88,7 @@ class RestaurantApplication(Tk):
 
         # Create Button Widgets
         self.add_button = Button(self.button_frame, text='Add - >', width=10, command= lambda: self.add_item())
-        self.remove_button = Button(self.button_frame, text='< - Remove', width=10)
+        self.remove_button = Button(self.button_frame, text='< - Remove', width=10, command= lambda: self.remove_item())
         self.proceed_button = Button(self.button_frame, text='Proceed', width=10)#, command=self.move_to_left)
 
         # Display the Widgets
@@ -145,8 +144,12 @@ class RestaurantApplication(Tk):
                 self.listbox2.insert('', 'end', values =(str(quantity) +' pc(s)', self.listbox1.item(selected_item)["values"][0], ("PHP " + str(subtotal_int * quantity) + ".00")))
         
     def remove_item(self):
-        
-        pass
+        selected_item = self.listbox2.focus()
+
+        if selected_item == "":
+            messagebox.showerror("Remove Item", "Please select an item from the right panel.")
+        else:
+            self.listbox2.delete(selected_item)
 
 # class MyDialog(tkSimpleDialog.Dialog):
 
