@@ -24,9 +24,9 @@ class RestaurantApplication(Tk):
         self.button_frame = Frame(self.main_frame)
 
         # Label Widgets
-        self.label_header = Label(self.main_frame, text=self.restaurant_name, font=("bold",30))
+        self.label_header = Label(self.main_frame, text=self.restaurant_name, font=("Helvetica",30))
         self.label_header.place(relx=0.5, rely=0.08, anchor=CENTER)
-        self.label_description = Label(self.main_frame, font=("bold",14), anchor=W, justify=LEFT,\
+        self.label_description = Label(self.main_frame, font=("Helvetica",14), anchor=W, justify=LEFT,\
             text=self.description)
         self.label_description.place(relx=0.5, rely=0.28, anchor=CENTER)
 
@@ -47,6 +47,32 @@ class RestaurantApplication(Tk):
 
         self.button_frame.place(height=225, width=126, rely=0.4, relx=0.36)
         self.main_frame.place(height=375, width=900)
+
+        self.withdraw()
+        self.security_login()
+
+    def security_login(self):
+        self.security_window = Toplevel()
+        self.security_window.title('Security Login')
+
+        self.bottom_frame = Frame(self.security_window, height=30)
+
+        self.label_username = Label(self.security_window, text="Enter Username:")
+        self.label_password = Label(self.security_window, text="Enter Password:")
+        self.entry_username = Entry(self.security_window, width=30)
+        self.entry_password = Entry(self.security_window, width=30, show="*")
+        self.button_ok = Button(self.security_window, text="OK", width=10)#, command = select_time)
+        self.button_cancel = Button(self.security_window, text="Cancel", width=10)#, command = select_time)
+
+        self.label_username.pack(anchor=W)
+        self.entry_username.pack()
+        self.label_password.pack(anchor=W)
+        self.entry_password.pack()
+        self.bottom_frame.pack(side=BOTTOM)
+        self.button_ok.place(anchor=CENTER, relx=0.3, rely=0.9)
+        self.button_cancel.place(anchor=CENTER, relx=0.7, rely=0.9)
+
+        #self.deiconify()
 
     def initial_values(self):
         self.restaurant_name = 'Wings and Ponchos: Mexican-Western Fusion'
