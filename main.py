@@ -89,7 +89,7 @@ class RestaurantApplication(Tk):
         # Create Button Widgets
         self.add_button = Button(self.button_frame, text='Add - >', width=10, command= lambda: self.add_item())
         self.remove_button = Button(self.button_frame, text='< - Remove', width=10, command= lambda: self.remove_item())
-        self.proceed_button = Button(self.button_frame, text='Proceed', width=10)#, command=self.move_to_left)
+        self.proceed_button = Button(self.button_frame, text='Proceed', width=10, command= lambda: self.proceed_items())
 
         # Display the Widgets
         self.add_button.place(anchor=CENTER,relx=0.5,rely=0.1)
@@ -151,7 +151,19 @@ class RestaurantApplication(Tk):
         else:
             self.listbox2.delete(selected_item)
 
-# class MyDialog(tkSimpleDialog.Dialog):
+    def proceed_items(self):
+        item_count = len(self.listbox2.get_children())
+
+        if item_count == 0:
+            messagebox.showerror("Confirm Order", "No orders taken yet. Please take at least one order")
+        else:
+            answer = messagebox.askyesno("Confirm Order", "Confirm Order?")
+            if answer == True:
+                #display discount
+                pass
+
+
+# class MyDialog(simpledialog.Dialog):
 
 #     def body(self, master):
 
@@ -168,7 +180,11 @@ class RestaurantApplication(Tk):
 #     def apply(self):
 #         first = self.e1.get()
 #         second = self.e2.get()
-#         print first, second 
+#         print (first, second)
 
 app = RestaurantApplication()
 app.mainloop()
+
+
+# Clear entire treeview
+# tree.delete(*tree.get_children())
