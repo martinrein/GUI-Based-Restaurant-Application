@@ -101,5 +101,6 @@ class RestaurantApplication(Tk):
         self.item_list = ast.literal_eval(item_contents)
         item_file.close()
 
+
 app = RestaurantApplication()
 app.mainloop()
