@@ -1,9 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import simpledialog
 from tkinter import ttk
 from tkinter import font
-#import tkinter.ttk as ttk
-# import ttk
 import json
 import os
 import ast
@@ -13,8 +12,8 @@ class RestaurantApplication(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
         self.setup_window()
-        self.withdraw()
-        self.security_login()
+        #self.withdraw()
+        #self.security_login()
 
     def security_login(self):
         self.security_window = Toplevel()
@@ -51,6 +50,16 @@ class RestaurantApplication(Tk):
         if response == 'ok':
             self.quit()
 
+    def initial_values(self):
+        self.restaurant_name = 'Wings and Ponchos: Mexican-Western Fusion'
+        self.description = 'Welcome to ' + self.restaurant_name + '!\n\n' + \
+            'Select an item from the right panel and press the Add button to add the item in '\
+                + 'your order. Your orders will appear on the left panel.\nTo cancel an order, '\
+                    + 'select the order from the left panel and click the Remove button. Press the'\
+                        + ' Proceed button to confirm your order.'
+        self.listbox_header1 = ['Item', 'Price']
+        self.listbox_header2 = ['','Item', 'Subtotal']
+
     def setup_window(self):
         self.resizable(width=False, height=False)
         self.geometry('900x375')
@@ -79,7 +88,7 @@ class RestaurantApplication(Tk):
         self.listbox2.configure(yscrollcommand=vsb2.set)
 
         # Create Button Widgets
-        self.add_button = Button(self.button_frame, text='Add - >', width=10)
+        self.add_button = Button(self.button_frame, text='Add - >', width=10, command= lambda: self.add_item())
         self.remove_button = Button(self.button_frame, text='< - Remove', width=10)
         self.proceed_button = Button(self.button_frame, text='Proceed', width=10)#, command=self.move_to_left)
 
@@ -115,16 +124,48 @@ class RestaurantApplication(Tk):
 
         for item in self.item_dict:
             self.listbox1.insert('', 'end', values=(item, ("PHP " + str(self.item_dict[item]) + ".00")))
-
-    def initial_values(self):
-        self.restaurant_name = 'Wings and Ponchos: Mexican-Western Fusion'
-        self.description = 'Welcome to ' + self.restaurant_name + '!\n\n' + \
-            'Select an item from the right panel and press the Add button to add the item in '\
-                + 'your order. Your orders will appear on the left panel.\nTo cancel an order, '\
-                    + 'select the order from the left panel and click the Remove button. Press the'\
-                        + ' Proceed button to confirm your order.'
-        self.listbox_header1 = ['Item', 'Price']
-        self.listbox_header2 = ['','Item', 'Subtotal']
    
+    def add_item(self):
+        selected_item = self.listbox1.focus()
+
+        if selected_item == "":
+            messagebox.showerror("Add Item", "Please select an item from the left panel.")
+        else:
+            quantity = simpledialog.askinteger("Add Item", "Enter quantity (1 to 99):",
+                                minvalue=1, maxvalue=99)
+            if quantity is None:
+                pass
+            elif quantity < 1:
+                messagebox.showwarning("Too small","The allowed minimum value is 1. Please try again.")
+            elif quantity > 99:
+                messagebox.showwarning("Too large","The allowed maximum value is 99. Please try again.")
+            else:
+                subtotal_str = self.listbox1.item(selected_item)["values"][1]
+                subtotal_int = int(subtotal_str[4:-3])
+                self.listbox2.insert('', 'end', values =(str(quantity) +' pc(s)', self.listbox1.item(selected_item)["values"][0], ("PHP " + str(subtotal_int * quantity) + ".00")))
+        
+    def remove_item(self):
+        
+        pass
+
+# class MyDialog(tkSimpleDialog.Dialog):
+
+#     def body(self, master):
+
+#         Label(master, text="First:").grid(row=0)
+#         Label(master, text="Second:").grid(row=1)
+
+#         self.e1 = Entry(master)
+#         self.e2 = Entry(master)
+
+#         self.e1.grid(row=0, column=1)
+#         self.e2.grid(row=1, column=1)
+#         return self.e1 # initial focus
+
+#     def apply(self):
+#         first = self.e1.get()
+#         second = self.e2.get()
+#         print first, second 
+
 app = RestaurantApplication()
 app.mainloop()
