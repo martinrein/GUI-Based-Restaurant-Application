@@ -60,7 +60,10 @@ class RestaurantApplication(Tk):
         self.listbox_header2 = ['','Item', 'Subtotal']
         self.total_cost = 0
         self.discount_price = None
+        self.discount_str = ''
         self.cash_tendered = 0
+        self.change = 0
+        self.all_items = ''
 
     def setup_window(self):
         self.resizable(width=False, height=False)
@@ -174,6 +177,18 @@ class RestaurantApplication(Tk):
 
         return children
 
+    def get_all_items(self, item=""):
+        children = self.listbox2.get_children(item)
+        for child in children:
+            children += self.get_total_cost(child)
+            item_str1 = self.listbox2.item(child)["values"][0]
+            item_str2 = self.listbox2.item(child)["values"][1]
+            item_str3 = self.listbox2.item(child)["values"][2]
+
+            self.all_items += item_str1 + ' ' + item_str2 + ' ' + item_str3 + '\n'
+
+        return children
+
     def discount_options(self):
         self.get_total_cost()
         
@@ -189,8 +204,12 @@ class RestaurantApplication(Tk):
         else:
             if self.discount_choice == 1:
                 self.discount_price = self.total_cost * 0.8
+                self.discount_str = 'Senior (20%)'
             elif self.discount_choice == 2:
                 self.discount_price = self.total_cost * 0.7
+                self.discount_str = 'Premium Membership (30%)'
+            else:
+                self.discount_str = 'None'
 
             self.payment_prompt()
 
@@ -203,19 +222,41 @@ class RestaurantApplication(Tk):
         payment_needed = format(payment_needed, '.2f')
 
         self.cash_tendered = simpledialog.askfloat("Payment", "You need to pay PHP " + str(payment_needed) + '\n\nPlease enter your payment',
-                            minvalue=self.total_cost)
+                            minvalue=float(payment_needed))
 
         if self.cash_tendered is None:
             messagebox.showerror("Error","No payment was given! You need to pay PHP " + str(payment_needed))
             self.payment_prompt()
-        elif self.cash_tendered < self.total_cost:
+        elif self.cash_tendered < float(payment_needed):
             messagebox.showerror("Error","Payment is insufficient! You need to pay PHP " + str(payment_needed))
         else:
             self.display_receipt()
         
     def display_receipt(self):
-        pass
+        if self.discount_price == None:
+            self.change = self.cash_tendered - self.total_cost
+        else:
+            self.change = self.cash_tendered - self.discount_price
+            self.discount_price = format(self.discount_price, '.2f')
+        self.get_all_items()
+        self.cash_tendered = format(self.cash_tendered, '.2f')
+        self.change = format(self.change, '.2f')
 
+        print_lines = ''
+        for i in range(50):
+            print_lines += '-' 
+
+        receipt_message = self.restaurant_name + '\n' + print_lines + '\n' + self.all_items + print_lines + '\nTotal Cost: PHP ' + str(format(self.total_cost, '.2f')) + '\nDiscount: ' + self.discount_str
+
+        if self.discount_choice != 0:
+            receipt_message += '\nDiscounted Price: PHP ' + str(self.discount_price)
+        
+        receipt_message += '\nCash Tendered: PHP ' + str(self.cash_tendered) + '\nChange: PHP ' + str(self.change) + '\n' + print_lines + '\nThank you for using this facility!\nCome again!'
+
+        response = messagebox.showinfo("Receipt", receipt_message)
+
+        if response == 'ok':
+            pass
 
 # class MyDialog(simpledialog.Dialog):
 
