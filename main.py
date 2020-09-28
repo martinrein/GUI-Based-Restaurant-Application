@@ -265,7 +265,12 @@ class RestaurantApplication(Tk):
             self.order_again()
 
     def order_again(self):
-        pass
+        yesorno_response = messagebox.askyesno("Take Order", "Thank you for your order!\n\nDo you want to use this facility again? Press No to exit this program.")
+        if yesorno_response == True:
+            self.listbox2.delete(*self.listbox2.get_children())
+            self.initial_values()
+        else: 
+            self.quit()
 
 # class MyDialog(simpledialog.Dialog):
 
