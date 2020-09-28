@@ -58,6 +58,7 @@ class RestaurantApplication(Tk):
                         + ' Proceed button to confirm your order.'
         self.listbox_header1 = ['Item', 'Price']
         self.listbox_header2 = ['','Item', 'Subtotal']
+        self.total_cost = 0
 
     def setup_window(self):
         self.resizable(width=False, height=False)
@@ -159,8 +160,36 @@ class RestaurantApplication(Tk):
         else:
             answer = messagebox.askyesno("Confirm Order", "Confirm Order?")
             if answer == True:
-                #display discount
-                pass
+                self.discount_options()
+
+    def get_total_cost(self, item=""):
+        children = self.listbox2.get_children(item)
+        for child in children:
+            children += self.get_total_cost(child)
+            item_cost_str = self.listbox2.item(child)["values"][2]
+            item_cost_int = int(item_cost_str[4:-3])
+            self.total_cost += item_cost_int
+
+        return children
+
+    def discount_options(self):
+        self.get_total_cost()
+        
+        self.discount_choice = simpledialog.askinteger("Discount", "Total cost is PHP " + str(self.total_cost) + '.00\n\nPlease enter which discount code applies:\n[0] None\n[1] Senior (20%)\n[2] Premium Membership (30%)',
+                                minvalue=0, maxvalue=2)
+
+        if self.discount_choice is None:
+            pass
+        elif self.discount_choice < 0:
+            messagebox.showwarning("Too small","The allowed minimum value is 0. Please try again.")
+        elif self.discount_choice > 2:
+            messagebox.showwarning("Too large","The allowed maximum value is 2. Please try again.")
+        else:
+            self.payment_prompt()
+            pass
+
+    def payment_prompt(self):
+        pass
 
 
 # class MyDialog(simpledialog.Dialog):
