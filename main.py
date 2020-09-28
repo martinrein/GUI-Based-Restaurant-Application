@@ -10,9 +10,9 @@ class RestaurantApplication(Tk):
 
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
+        self.security_login()
         self.setup_window()
-        #self.withdraw()
-        #self.security_login()
+        self.withdraw()
 
     def security_login(self):
         self.security_window = Toplevel()
@@ -272,28 +272,5 @@ class RestaurantApplication(Tk):
         else: 
             self.quit()
 
-# class MyDialog(simpledialog.Dialog):
-
-#     def body(self, master):
-
-#         Label(master, text="First:").grid(row=0)
-#         Label(master, text="Second:").grid(row=1)
-
-#         self.e1 = Entry(master)
-#         self.e2 = Entry(master)
-
-#         self.e1.grid(row=0, column=1)
-#         self.e2.grid(row=1, column=1)
-#         return self.e1 # initial focus
-
-#     def apply(self):
-#         first = self.e1.get()
-#         second = self.e2.get()
-#         print (first, second)
-
 app = RestaurantApplication()
 app.mainloop()
-
-
-# Clear entire treeview
-# tree.delete(*tree.get_children())
