@@ -256,7 +256,16 @@ class RestaurantApplication(Tk):
         response = messagebox.showinfo("Receipt", receipt_message)
 
         if response == 'ok':
-            pass
+            yesorno_response = messagebox.askyesno("Save Receipt", "Do you want to save the receipt?")
+            if yesorno_response == True:
+                f = open("receipt.txt", "w")
+                f.write(receipt_message)
+                f.close()
+            
+            self.order_again()
+
+    def order_again(self):
+        pass
 
 # class MyDialog(simpledialog.Dialog):
 
