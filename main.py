@@ -59,6 +59,8 @@ class RestaurantApplication(Tk):
         self.listbox_header1 = ['Item', 'Price']
         self.listbox_header2 = ['','Item', 'Subtotal']
         self.total_cost = 0
+        self.discount_price = None
+        self.cash_tendered = 0
 
     def setup_window(self):
         self.resizable(width=False, height=False)
@@ -185,10 +187,33 @@ class RestaurantApplication(Tk):
         elif self.discount_choice > 2:
             messagebox.showwarning("Too large","The allowed maximum value is 2. Please try again.")
         else:
+            if self.discount_choice == 1:
+                self.discount_price = self.total_cost * 0.8
+            elif self.discount_choice == 2:
+                self.discount_price = self.total_cost * 0.7
+
             self.payment_prompt()
-            pass
 
     def payment_prompt(self):
+        if self.discount_price == None:
+            payment_needed = self.total_cost
+        else:
+            payment_needed = self.discount_price
+
+        payment_needed = format(payment_needed, '.2f')
+
+        self.cash_tendered = simpledialog.askfloat("Payment", "You need to pay PHP " + str(payment_needed) + '\n\nPlease enter your payment',
+                            minvalue=self.total_cost)
+
+        if self.cash_tendered is None:
+            messagebox.showerror("Error","No payment was given! You need to pay PHP " + str(payment_needed))
+            self.payment_prompt()
+        elif self.cash_tendered < self.total_cost:
+            messagebox.showerror("Error","Payment is insufficient! You need to pay PHP " + str(payment_needed))
+        else:
+            self.display_receipt()
+        
+    def display_receipt(self):
         pass
 
 
